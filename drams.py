@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
 import urllib.request as ur
 import csv
-from datetime import datetime
+import time
 
+start_time = time.time()
+
+BASE_URL = 'https://www.thewhiskyexchange.com'
 # Big ol' list of whiskeys
 whiskeyList = []
 
@@ -18,10 +21,25 @@ def updateCSV(type):
     with open('whiskeys.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
         if type == 'Single Malt':
-            writer.writerow(['Type', 'Distillery', 'Updated'])
+            writer.writerow(['Type', 'Distillery', 'Whiskeys'])
         for w in whiskeyList:
             if w[0] == type:
-                writer.writerow([w[0], w[1], datetime.now()])
+                writer.writerow([w[0], w[1], w[2]])
+
+
+def parseIndividualWhiskeys(brandURL):
+    listowhiskeys = []
+
+    indURL = BASE_URL + brandURL
+    indOuter = opener.open(indURL)
+    indPage = indOuter.read()
+    indSoup = BeautifulSoup(indPage, 'html.parser')
+    indList = indSoup.body.div.find("div", "wrapper").find("div", "products-wrapper").div.div.find_all("div", "item")
+    for i in indList:
+        listowhiskeys.append(i.a.find("div", "information").div.text)
+
+    return listowhiskeys
+
 
 # All letter lists will be of the same structure, so pass the html section
 # for each letter here to parse 
@@ -33,7 +51,13 @@ def parseList(soup, type):
     for letter in azList:
         whiskeys = letter.find_all("li", "az-item")
         for a in whiskeys:
-            whiskeyList.append([type, a.span.text])
+            dWhiskeys = ['none']
+            if type == 'Single Malt':
+                dLink = a.a['href']
+                dWhiskeys = parseIndividualWhiskeys(dLink) # List of whiskeys
+            # Type, Distillery, List of whiskeys
+            whiskeyList.append([type, a.span.text, dWhiskeys])
+
 
 # URL opener
 opener = AppURLOpener()
@@ -112,3 +136,5 @@ worldPage = wOuter.read()
 wSoup = BeautifulSoup(worldPage, 'html.parser')
 parseList(wSoup, 'World')
 updateCSV('World')
+
+print("Drams finished in (seconds): ", time.time() - start_time)
