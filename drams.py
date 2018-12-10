@@ -17,7 +17,8 @@ class AppURLOpener(ur.FancyURLopener):
 def updateCSV(type):
     with open('whiskeys.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['Type', 'Name', 'Updated'])
+        if type == 'Single Malt':
+            writer.writerow(['Type', 'Name', 'Updated'])
         for w in whiskeyList:
             writer.writerow([type, w, datetime.now()])
 
