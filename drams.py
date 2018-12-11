@@ -26,7 +26,7 @@ def updateCSV(type):
             if w[0] == type:
                 writer.writerow([w[0], w[1], w[2]])
 
-
+# Get list of individual whiskeys under a specific distillery
 def parseIndividualWhiskeys(brandURL):
     listowhiskeys = []
 
@@ -36,6 +36,7 @@ def parseIndividualWhiskeys(brandURL):
     indPage = indOuter.read()
     indSoup = BeautifulSoup(indPage, 'html.parser')
     pGrid = indSoup.body.div.find("div", "wrapper").find("div", "products-wrapper").find("div", "products-grid")
+    # Check if said distillery has any whiskeys posted on Whiskey Exchange
     if pGrid != None:
         indList = indSoup.body.div.find("div", "wrapper").find("div", "products-wrapper").div.div.find_all("div", "item")
         for i in indList:
@@ -46,6 +47,7 @@ def parseIndividualWhiskeys(brandURL):
                 listowhiskeys.append(i.a.find("div", "information").div.text + ' ' + subText)
             else:
                 listowhiskeys.append(i.a.find("div", "information").div.text)
+    # Otherwise, append None
     else:
         listowhiskeys.append('None')
 
@@ -71,8 +73,6 @@ def parseList(soup, type):
 # URL opener
 opener = AppURLOpener()
 
-# Scotch
-
 ## Single Malt
 smUrl = 'https://www.thewhiskyexchange.com/brands/scotchwhisky/40/single-malt-scotch-whisky'
 smOuter = opener.open(smUrl)
@@ -80,7 +80,6 @@ singleMaltPage = smOuter.read()
 smSoup = BeautifulSoup(singleMaltPage, 'html.parser')
 parseList(smSoup, 'Single Malt')
 updateCSV('Single Malt')
-
 
 ## Blended Malt
 bmUrl = 'https://www.thewhiskyexchange.com/brands/scotchwhisky/309/blended-malt-scotch-whisky'
@@ -146,4 +145,5 @@ wSoup = BeautifulSoup(worldPage, 'html.parser')
 parseList(wSoup, 'World')
 updateCSV('World')
 
+# Show runtime
 print("Drams finished in (seconds): ", time.time() - start_time)
