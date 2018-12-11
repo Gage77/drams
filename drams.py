@@ -31,12 +31,23 @@ def parseIndividualWhiskeys(brandURL):
     listowhiskeys = []
 
     indURL = BASE_URL + brandURL
+    print(indURL)
     indOuter = opener.open(indURL)
     indPage = indOuter.read()
     indSoup = BeautifulSoup(indPage, 'html.parser')
-    indList = indSoup.body.div.find("div", "wrapper").find("div", "products-wrapper").div.div.find_all("div", "item")
-    for i in indList:
-        listowhiskeys.append(i.a.find("div", "information").div.text)
+    pGrid = indSoup.body.div.find("div", "wrapper").find("div", "products-wrapper").find("div", "products-grid")
+    if pGrid != None:
+        indList = indSoup.body.div.find("div", "wrapper").find("div", "products-wrapper").div.div.find_all("div", "item")
+        for i in indList:
+            subText = i.a.find("div", "information").div.span
+            if subText != None:
+                subText = i.a.find("div", "information").div.span.text
+                i.a.find("div", "information").div.span.replace_with('')
+                listowhiskeys.append(i.a.find("div", "information").div.text + ' ' + subText)
+            else:
+                listowhiskeys.append(i.a.find("div", "information").div.text)
+    else:
+        listowhiskeys.append('None')
 
     return listowhiskeys
 
@@ -51,10 +62,8 @@ def parseList(soup, type):
     for letter in azList:
         whiskeys = letter.find_all("li", "az-item")
         for a in whiskeys:
-            dWhiskeys = ['none']
-            if type == 'Single Malt':
-                dLink = a.a['href']
-                dWhiskeys = parseIndividualWhiskeys(dLink) # List of whiskeys
+            dLink = a.a['href']
+            dWhiskeys = parseIndividualWhiskeys(dLink) # List of whiskeys
             # Type, Distillery, List of whiskeys
             whiskeyList.append([type, a.span.text, dWhiskeys])
 
