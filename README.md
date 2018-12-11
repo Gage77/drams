@@ -8,6 +8,8 @@ Drams scrapes the [Whiskey Exchange](https://www.thewhiskyexchange.com/) for lis
 
 This scraper divides the data into their respective geographic location, with Scotch being broken down by type.
 
+I also plan on scraping [Master of Malt](https://www.masterofmalt.com/) to get any whiskeys that are not currently listed on the Whiskey Exchange.
+
 ### Types
 
 - Scotch
