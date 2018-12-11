@@ -20,3 +20,5 @@ This scraper divides the data into their respective geographic location, with Sc
 - Japanese
 - American
 - Other
+
+Currently, there are **2,758 whiskeys** from **569 distilleries**

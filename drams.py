@@ -4,6 +4,8 @@ import csv
 import time
 
 start_time = time.time()
+totalNumWhiskeys = 0
+totalNumDistilleries = 0
 
 BASE_URL = 'https://www.thewhiskyexchange.com'
 # Big ol' list of whiskeys
@@ -29,6 +31,7 @@ def updateCSV(type):
 # Get list of individual whiskeys under a specific distillery
 def parseIndividualWhiskeys(brandURL):
     listowhiskeys = []
+    global totalNumWhiskeys
 
     indURL = BASE_URL + brandURL
     print(indURL)
@@ -44,9 +47,10 @@ def parseIndividualWhiskeys(brandURL):
             if subText != None:
                 subText = i.a.find("div", "information").div.span.text
                 i.a.find("div", "information").div.span.replace_with('')
-                listowhiskeys.append(i.a.find("div", "information").div.text + ' ' + subText)
+                listowhiskeys.append(i.a.find("div", "information").div.text.strip() + ' ' + subText)
             else:
-                listowhiskeys.append(i.a.find("div", "information").div.text)
+                listowhiskeys.append(i.a.find("div", "information").div.text.strip())
+            totalNumWhiskeys += 1
     # Otherwise, append None
     else:
         listowhiskeys.append('None')
@@ -57,6 +61,7 @@ def parseIndividualWhiskeys(brandURL):
 # All letter lists will be of the same structure, so pass the html section
 # for each letter here to parse 
 def parseList(soup, type):
+    global totalNumDistilleries
     azContainer = soup.body.div.find("div", "wrapper").find_all("div", "container")
     azList = azContainer[3].div.find_all("div", "az-letter")
 
@@ -68,6 +73,7 @@ def parseList(soup, type):
             dWhiskeys = parseIndividualWhiskeys(dLink) # List of whiskeys
             # Type, Distillery, List of whiskeys
             whiskeyList.append([type, a.span.text, dWhiskeys])
+            totalNumDistilleries += 1
 
 
 # URL opener
@@ -146,4 +152,6 @@ parseList(wSoup, 'World')
 updateCSV('World')
 
 # Show runtime
+print('Total number of distilleries in DB: ' + str(totalNumDistilleries))
+print('Total number of whiskeys in DB: ' + str(totalNumWhiskeys))
 print("Drams finished in (seconds): ", time.time() - start_time)
