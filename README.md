@@ -23,4 +23,4 @@ I also plan on scraping [Master of Malt](https://www.masterofmalt.com/) to get a
 - American
 - Other
 
-Currently, there are **2,758 whiskeys** from **569 distilleries**
+Currently, there are **2,622 whiskeys** from **568 distilleries**

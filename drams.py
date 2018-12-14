@@ -50,12 +50,13 @@ def parseIndividualWhiskeys(brandURL):
                 listowhiskeys.append(i.a.find("div", "information").div.text.strip() + ' ' + subText)
             else:
                 listowhiskeys.append(i.a.find("div", "information").div.text.strip())
-            totalNumWhiskeys += 1
     # Otherwise, append None
     else:
         listowhiskeys.append('None')
 
-    return listowhiskeys
+    listOfSingleWhiskeys = set(listowhiskeys)
+    totalNumWhiskeys += len(listOfSingleWhiskeys)
+    return listOfSingleWhiskeys
 
 
 # All letter lists will be of the same structure, so pass the html section
